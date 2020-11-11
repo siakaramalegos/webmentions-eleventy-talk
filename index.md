@@ -42,7 +42,7 @@ Note: Show site with webmentions at bottom. Point out that this isn't a commenti
 
 ---
 
-<!-- .slide: data-background="./images/duotone-yell.png" class="dark-highlight-quote" -->
+<!-- .slide: data-background="./images/duotone-yell.jpg" class="dark-highlight-quote" -->
 
 > When you link to a website, you can send it a Webmention to notify it. If it supports Webmentions, then that website may display your post as a comment, like, or other response, and presto, you’re having a conversation from one site to another! <!-- .element: class="dark-background" -->
 
@@ -73,13 +73,13 @@ Note: Show site with webmentions at bottom. Point out that this isn't a commenti
 
 ---
 
-<!-- .slide: data-background="./images/balloon-feet.png" -->
+<!-- .slide: data-background="./images/balloon-feet.jpg" -->
 
 # How does it <br>work?<!-- .element: style="color:#fff;" -->
 
 ---
 
-<img src="./images/webmention_io.png" class="no-outline" alt="Screenshot of Webmention.io website" width="50%">
+<img src="./images/webmention_io.jpg" class="no-outline" alt="Screenshot of Webmention.io website" width="50%">
 
 <small>[webmention.io/](https://webmention.io/)</small>
 
@@ -129,7 +129,7 @@ Form on my blog pages for people to manually send replies:
 
 ---
 
-<img src="./images/bridgy.png" class="no-outline" alt="Screenshot of brid.gy website" width="70%">
+<img src="./images/bridgy.jpg" class="no-outline" alt="Screenshot of brid.gy website" width="70%">
 
 <small>[brid.gy/](https://brid.gy/)</small>
 
@@ -137,7 +137,7 @@ Note: allows you to easily grab webmentions from these social media platforms as
 
 ---
 
-<img src="./images/bridgy-polling.png" class="no-outline" alt="Brid.gy table of responses with a column matching to any existing webmention targets" width="70%">
+<img src="./images/bridgy-polling.jpg" class="no-outline" alt="Brid.gy table of responses with a column matching to any existing webmention targets" width="70%">
 
 ---
 
@@ -156,7 +156,7 @@ Note: I didn't know about Netlify-cli when I wrote the post - that is a better o
 
 ---
 
-<!-- .slide: data-background="./images/duotone-road.png" -->
+<!-- .slide: data-background="./images/duotone-road.jpg" -->
 
 # Eleventy <!-- .element: class="dark-background" -->
 
@@ -337,6 +337,7 @@ jobs:
 
 ---
 
+<!-- .slide: data-background="./images/duotone-small-hiss.jpg" -->
 # 🎉<!-- .element: style="font-size:4em;" -->
 
 ---
