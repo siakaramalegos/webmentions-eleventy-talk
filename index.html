@@ -201,20 +201,7 @@ function webmentionsByType (mentions, mentionType) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-## Render webmentions: Post layout
-
-```html
-<!-- _includes/layouts/post.njk -->
-<section>
-  <h2>Webmentions</h3>
-  {% set webmentionUrl %}
-    {{ page.url | url | absoluteUrl(site.url) }}
-  {% endset %}
-  {% include 'webmentions.njk' %}
-</section>
-```
-</script></section><section  data-markdown><script type="text/template">
-## Render webmentions: Webmentions partial
+## Render webmentions: Template
 
 Set all the variables needed:
 
@@ -306,13 +293,12 @@ jobs:
 
 - Road possum - Image by <a href="https://pixabay.com/users/csbonawitz-10920947/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3861107">csbonawitz</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3861107">Pixabay</a>
 - Hissing possum - Image by <a href="https://pixabay.com/users/xandepontes-13842118/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4787791">Alexandre Pontes Gomes xande</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4787791">Pixabay</a>
-- Snow possum - https://biodiversity.utexas.edu/news/entry/campus-biodiversity-awesome-opossums
+- Snow possum - [University of Texas biodiversity blog](https://biodiversity.utexas.edu/news/entry/campus-biodiversity-awesome-opossums)
 - Possum with babies - [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Didelphis_virginiana_with_young.JPG)
 - Balloons <span>Photo by <a href="https://unsplash.com/@buco_balkanessi?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Bucography</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 - Heart balloons <span>Photo by <a href="https://unsplash.com/@akshar_dave?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Akshar Dave</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 - Balloon and feet dangling - <span>Photo by <a href="https://unsplash.com/@edrecestansberry?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Edrece Stansberry</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
-- Possum yelling https://twitter.com/PossumEveryHour/status/1325951348291072000
-- [@PossumEveryHour](https://twitter.com/PossumEveryHour)</script></section></div>
+- Possum yelling [tweet](https://twitter.com/PossumEveryHour/status/1325951348291072000) by [@PossumEveryHour](https://twitter.com/PossumEveryHour)</script></section></div>
     </div>
 
     <script src="./js/reveal.js"></script>
