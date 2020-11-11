@@ -197,6 +197,10 @@ body {
   margin: 0 0 0 1em;
 }
 
+.reveal li {
+  margin-bottom: 0.3em;
+}
+
 .reveal ol {
   list-style-type: decimal;
 }
