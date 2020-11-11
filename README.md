@@ -1,14 +1,16 @@
-# Responsive Images for the Web
+# Webmentions + Eleventy Talk
 
-Images account for 50% of the bytes downloaded to load a website. How can you make sure that your users only download the smallest image necessary while preserving image quality? In this talk, we'll focus on the underlying concepts in HTML and CSS for serving responsive images, which you can take with you no matter which tool you use.Which file formats suit which image types best? How can you use art direction in images to show the best image for a viewport layout? Come learn about this and more!
+Webmentions are an exciting standard which help enable the IndieWeb. We can own our own content, hosted on our own domains, without sacrificing social connection and replies with other people!
+
+In this talk, I discuss what webmentions are and how to implement them. The code is based on an Eleventy site, but the concepts should be applicable to any site.
 
 ## Slides and Controls
 
-The slides are deployed at https://projects.sia.codes/responsive-images-2020/#/.
+The slides are deployed at [projects.sia.codes/webmentions-eleventy-talk/](https://projects.sia.codes/webmentions-eleventy-talk/#/).
 
 To advance the slides, use `n` for next and `p` for previous. The right arrow jumps to the next section (and left for previous section). Up and down to advance through slides within a section.
 
-## About the trainer
+## About the speaker
 
 **Sia Karamalegos** Sia Karamalegos is a developer, international conference speaker, and writer. She is a Google Developer Expert in Web Technologies and a Women Techmakers ambassador. She co-organizes GDG New Orleans and its marquee event, DevFest New Orleans. She is the founder and lead developer for Clio + Calliope Web Development and was recognized in the Silicon Bayou 100, the 100 most influential and active people in tech and entrepreneurship in Louisiana.
 

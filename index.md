@@ -18,9 +18,19 @@ revealOptions:
 
 <img src="./images/champagne_sia.jpg" alt="Sia dressed up as a champagne bottle at Mardi Gras" height="450px" class="no-outline">
 
-<!-- ---
+---
 
-## [bit.ly/web-images-2020](http://bit.ly/web-images-2020) -->
+## [sia.codes/posts/webmentions-eleventy-talk/](https://sia.codes/posts/webmentions-eleventy-talk/)
+
+---
+
+## Show + Tell
+
+Webmentions are cool 😎
+
+[sia.codes/posts/architecting-data-in-eleventy/](https://sia.codes/posts/architecting-data-in-eleventy/)
+
+Note: Show site with webmentions at bottom. Point out that this isn't a commenting and liking system, and it's my own website. Most come from Twitter because of how I share, but also other websites. In this talk
 
 ---
 
@@ -131,15 +141,203 @@ Note: allows you to easily grab webmentions from these social media platforms as
 
 ---
 
-<img src="./images/webmention_article.png" class="no-outline" alt="Screenshot of my Webmention + Eleventy tutorial" width="70%">
+## Set up Webmention Services
 
-<small>[An In-Depth Tutorial of Webmentions + Eleventy](https://sia.codes/posts/webmentions-eleventy-in-depth/) on sia.codes</small>
+<span class="icons"><i class="fas fa-2x fa-concierge-bell"></i></span>
+
+<ol>
+  <li class="fragment fade-in-then-semi-out">Set up <a href="https://indieauth.com/setup">IndieAuth</a> so you can log in with your domain.</li>
+  <li class="fragment fade-in-then-semi-out">Sign in on <a href="https://webmention.io/">webmention.io</a> to get your link tags so webmention.io can collect webmentions for your site.</li>
+  <li class="fragment fade-in-then-semi-out">Securely save your webmention.io API key.</li>
+  <li class="fragment fade-in-then-semi-out">Optionally sign up for a social media webmention service like <a href="https://brid.gy/">Bridgy</a>.</li>
+</ol>
+
+Note: I didn't know about Netlify-cli when I wrote the post - that is a better option for managing env variables.
 
 ---
 
 <!-- .slide: data-background="./images/duotone-road.png" -->
 
 # Eleventy <!-- .element: class="dark-background" -->
+
+---
+
+<img src="./images/webmention_article.png" class="no-outline" alt="Screenshot of my Webmention + Eleventy tutorial" width="70%">
+
+<small>[An In-Depth Tutorial of Webmentions + Eleventy](https://sia.codes/posts/webmentions-eleventy-in-depth/) on sia.codes</small>
+
+Note: This talk won't be an in-depth tutorial - we'll focus on the high-level how. The good news is I already have a detailed tutorial published!
+
+---
+
+## The Process <span class="icons"><i class="far fa-project-diagram"></i></span>
+
+- In production, fetch new webmentions during the build<!-- .element: class="fragment fade-in-then-semi-out" -->
+- Store them in a cache file<!-- .element: class="fragment fade-in-then-semi-out" -->
+- Render the webmentions<!-- .element: class="fragment fade-in-then-semi-out" -->
+- Set up periodic builds<!-- .element: class="fragment fade-in-then-semi-out" -->
+
+---
+
+## Fetch new webmentions
+
+&nbsp;
+
+```javascript
+// `since` comes from the `lastFetched` attribute in our cache file
+const API = 'https://webmention.io/api'
+const url = `${API}/mentions.jf2?domain=${domain}&token=${TOKEN}
+  &per-page=${perPage}&since=${since}`
+// ...
+```
+&nbsp;
+
+<small>**Prior art**: I started with Max Böck's post [Static Indieweb pt2: Using Webmentions](https://mxb.dev/blog/using-webmentions-on-static-sites/) and the code for Zach Leatherman's [personal site](https://github.com/zachleat/zachleat.com), sprinkled in microformats from Keith Grant's [Adding Webmention Support to a Static Site](https://keithjgrant.com/posts/2019/02/adding-webmention-support-to-a-static-site/), and made my own changes.</small>
+
+---
+
+## Write to cache file
+
+```javascript
+// save combined webmentions in cache file (simplified)
+function writeToCache(data) {
+  const dir = '_cache'
+  const fileContent = JSON.stringify(data, null, 2)
+
+  // write data to cache json file
+  fs.writeFile(CACHE_FILE_PATH, fileContent, err => {
+    if (err) throw err
+    console.log(`>>> webmentions cached to ${CACHE_FILE_PATH}`)
+  })
+}
+```
+
+---
+
+## Render webmentions: Filters
+
+New Nunjucks [filters](https://mozilla.github.io/nunjucks/templating.html#filters) for handling the data:
+
+```javascript
+function getWebmentionsForUrl (webmentions, url) {
+  return webmentions.children.filter(entry => {
+    return entry['wm-target'] === url
+  })
+}
+
+function size (mentions) {
+  return !mentions ? 0 : mentions.length
+}
+
+function webmentionsByType (mentions, mentionType) {
+  return mentions.filter(entry => !!entry[mentionType])
+}
+```
+
+---
+
+## Render webmentions: Post layout
+
+```html
+<!-- _includes/layouts/post.njk -->
+<section>
+  <h2>Webmentions</h3>
+  {% set webmentionUrl %}
+    {{ page.url | url | absoluteUrl(site.url) }}
+  {% endset %}
+  {% include 'webmentions.njk' %}
+</section>
+```
+
+---
+
+## Render webmentions: Webmentions partial
+
+Set all the variables needed:
+
+```html
+<!-- _includes/webmentions.njk -->
+
+<!-- Filter the cached mentions for the post's url -->
+{% set mentions = webmentions | getWebmentionsForUrl(metadata.url + webmentionUrl) %}
+<!-- Set likes as mentions that are `like-of`  -->
+{% set likes = mentions | webmentionsByType('like-of') %}
+<!-- Count the total likes -->
+{% set likesSize = likes | size %}
+<!-- Set replies as mentions that are `in-reply-to`  -->
+{% set replies = mentions | webmentionsByType('in-reply-to')  %}
+<!-- Count the total replies -->
+{% set repliesSize = replies | size  %}
+
+<!-- ... -->
+```
+
+---
+
+## Render webmentions: Loop through data
+
+```html
+<!-- _includes/webmentions.njk -->
+
+<!-- ... -->
+{% if repliesSize > 0 %}
+<div class="webmention-replies">
+  <h3>{{ repliesSize }} {% if repliesSize == "1" %}Reply{% else %}Replies{% endif %}</h3>
+  {% for webmention in replies %}
+    {% include 'webmention.njk' %}
+  {% endfor %}
+</div>
+{% endif %}
+```
+
+---
+
+## Render webmentions
+
+```html
+<!-- _includes/webmention.njk - simplified -->
+<article>
+  {% if webmention.author %}
+    <strong class="p-name">{{ webmention.author.name }}</strong>
+  {% else %}
+    <strong>Anonymous</strong>
+  {% endif %}
+
+  <p>
+    {{ webmention.content.text | truncate }}
+    {% if webmention.url %}
+      <a href="{{ webmention.url }}">source</a>
+    {% endif %}
+  </p>
+</article>
+```
+
+---
+
+## Fake Netlify cron jobs with GitHub actions!
+
+```yaml
+# .github/workflows/build-scheduler.yml
+name: Scheduled build
+on:
+  schedule:
+  # At minute 20 past every 4th hour from 0 through 23.
+  - cron: '20 0/4 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger our build webhook on Netlify
+      run: curl -s -X POST "https://api.netlify.com/build_hooks/${TOKEN}"
+      env:
+        TOKEN: ${{ secrets.NETLIFY_BUILD_TOKEN }}
+```
+
+<small>[Scheduling Netlify deploys with GitHub Actions](https://www.voorhoede.nl/en/blog/scheduling-netlify-deploys-with-github-actions/), [crontab guru](https://crontab.guru/#15_0/3_*_*_*)</small>
+
+---
+
+# 🎉<!-- .element: style="font-size:4em;" -->
 
 ---
 
@@ -157,7 +355,7 @@ Note: allows you to easily grab webmentions from these social media platforms as
 - Road possum - Image by <a href="https://pixabay.com/users/csbonawitz-10920947/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3861107">csbonawitz</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3861107">Pixabay</a>
 - Hissing possum - Image by <a href="https://pixabay.com/users/xandepontes-13842118/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4787791">Alexandre Pontes Gomes xande</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4787791">Pixabay</a>
 - Snow possum - https://biodiversity.utexas.edu/news/entry/campus-biodiversity-awesome-opossums
-- Possum with babies - Wikimedia Commons https://commons.wikimedia.org/wiki/File:Didelphis_virginiana_with_young.JPG
+- Possum with babies - [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Didelphis_virginiana_with_young.JPG)
 - Balloons <span>Photo by <a href="https://unsplash.com/@buco_balkanessi?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Bucography</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 - Heart balloons <span>Photo by <a href="https://unsplash.com/@akshar_dave?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Akshar Dave</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 - Balloon and feet dangling - <span>Photo by <a href="https://unsplash.com/@edrecestansberry?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Edrece Stansberry</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
